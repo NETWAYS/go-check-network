@@ -1,0 +1,25 @@
+# Editors
+/.idea/
+[._]*.sw[a-p]
+*~
+
+# Binaries for programs and plugins
+/build/
+/dist/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test artifacts
+httpmock-record.yml
+
+# Test binary, built with `go test -c`
+*.test
+*.profile
+*.benchmark
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+coverage.html
