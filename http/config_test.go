@@ -33,6 +33,8 @@ func TestTLSConfig(t *testing.T) {
 
 	configTLSConfig := TLSConfig{
 		InsecureSkipVerify: true,
+		ServerName:         "Test",
+		CAFile:             testcert,
 		CertFile:           testcert,
 		KeyFile:            testkey,
 	}
