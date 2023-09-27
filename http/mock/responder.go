@@ -2,8 +2,8 @@ package checkhttpmock
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/http"
+	"os"
 	"path"
 	"strings"
 
@@ -38,7 +38,7 @@ func NewQueryMapResponder(queryMap QueryMap) func(request *http.Request) (*http.
 
 		for part, file := range queryMap {
 			if strings.Contains(query, part) {
-				body, err := ioutil.ReadFile(path.Join(TestData, file))
+				body, err := os.ReadFile(path.Join(TestData, file))
 				return httpmock.NewStringResponse(200, string(body)), err
 			}
 		}

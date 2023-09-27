@@ -3,7 +3,6 @@ package checkhttpmock
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/jarcoal/httpmock"
@@ -48,6 +47,6 @@ func requestAndDump(req *http.Request) {
 
 	defer resp.Body.Close()
 
-	data, _ := ioutil.ReadAll(resp.Body)
+	data, _ := io.ReadAll(resp.Body)
 	fmt.Println(string(data))
 }

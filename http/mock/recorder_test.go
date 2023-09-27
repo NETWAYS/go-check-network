@@ -3,7 +3,6 @@ package checkhttpmock
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 
@@ -36,11 +35,11 @@ func ExampleActivateRecorder() {
 	}
 
 	// Print response body
-	data, _ := ioutil.ReadAll(resp.Body)
+	data, _ := io.ReadAll(resp.Body)
 	fmt.Printf("%s\n", data)
 
 	// Print recording
-	data, _ = ioutil.ReadFile(RecordFile)
+	data, _ = os.ReadFile(RecordFile)
 	fmt.Printf("%s\n", data)
 
 	_ = resp.Body.Close()
