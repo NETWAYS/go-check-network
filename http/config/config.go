@@ -23,6 +23,7 @@ func cloneRequest(r *http.Request) *http.Request {
 	for k, s := range r.Header {
 		r2.Header[k] = s
 	}
+
 	return r2
 }
 
@@ -31,7 +32,7 @@ func readCAFile(f string) ([]byte, error) {
 	d, err := os.ReadFile(f)
 
 	if err != nil {
-		return nil, fmt.Errorf("unable to load CA cert %s: %s", f, err)
+		return nil, fmt.Errorf("unable to load CA cert %s: %w", f, err)
 	}
 
 	return d, nil
@@ -42,13 +43,13 @@ func (c *TLSConfig) getClientCertificate(_ *tls.CertificateRequestInfo) (*tls.Ce
 	certData, keyData, err := readCertAndKey(c.CertFile, c.KeyFile)
 
 	if err != nil {
-		return nil, fmt.Errorf("unable to read client cert (%s) & key (%s): %s", c.CertFile, c.KeyFile, err)
+		return nil, fmt.Errorf("unable to read client cert (%s) & key (%s): %w", c.CertFile, c.KeyFile, err)
 	}
 
 	cert, err := tls.X509KeyPair(certData, keyData)
 
 	if err != nil {
-		return nil, fmt.Errorf("unable to use client cert (%s) & key (%s): %s", c.CertFile, c.KeyFile, err)
+		return nil, fmt.Errorf("unable to use client cert (%s) & key (%s): %w", c.CertFile, c.KeyFile, err)
 	}
 
 	return &cert, nil
@@ -75,7 +76,9 @@ func updateRootCA(cfg *tls.Config, b []byte) bool {
 	if !caCertPool.AppendCertsFromPEM(b) {
 		return false
 	}
+
 	cfg.RootCAs = caCertPool
+
 	return true
 }
 
@@ -91,6 +94,7 @@ type TLSConfig struct {
 // NewTLSConfig creates a new tls.Config from the given TLSConfig.
 func NewTLSConfig(cfg *TLSConfig) (*tls.Config, error) {
 	tlsConfig := &tls.Config{
+		// nolint: gosec
 		InsecureSkipVerify: cfg.InsecureSkipVerify,
 	}
 
@@ -112,6 +116,7 @@ func NewTLSConfig(cfg *TLSConfig) (*tls.Config, error) {
 	}
 
 	// If a client cert & key is provided then configure TLS config accordingly.
+	// nolint: gocritic
 	if len(cfg.CertFile) > 0 && len(cfg.KeyFile) == 0 {
 		return nil, fmt.Errorf("client cert file %q specified without client key file", cfg.CertFile)
 	} else if len(cfg.KeyFile) > 0 && len(cfg.CertFile) == 0 {
@@ -143,7 +148,7 @@ func NewAuthorizationCredentialsRoundTripper(authType, authCredentials string, r
 func (rt *authorizationCredentialsRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
 	if len(req.Header.Get("Authorization")) == 0 {
 		req = cloneRequest(req)
-		req.Header.Set("Authorization", fmt.Sprintf("%s %s", rt.authType, string(rt.authCredentials)))
+		req.Header.Set("Authorization", fmt.Sprintf("%s %s", rt.authType, rt.authCredentials))
 	}
 
 	return rt.rt.RoundTrip(req)
@@ -172,7 +177,7 @@ func (rt *basicAuthRoundTripper) RoundTrip(req *http.Request) (*http.Response, e
 
 	req = cloneRequest(req)
 
-	req.SetBasicAuth(rt.username, strings.TrimSpace(string(rt.password)))
+	req.SetBasicAuth(rt.username, strings.TrimSpace(rt.password))
 
 	return rt.rt.RoundTrip(req)
 }
