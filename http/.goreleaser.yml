@@ -1,4 +1,4 @@
-# See documentation at https://goreleaser.com
+---
 before:
   hooks:
     - go mod download
