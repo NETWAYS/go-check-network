@@ -166,6 +166,7 @@ type basicAuthRoundTripper struct {
 	rt       http.RoundTripper
 }
 
+// NewBasicAuthRoundTripper adds the provided basic auth credentials to a request
 func NewBasicAuthRoundTripper(username, password string, rt http.RoundTripper) http.RoundTripper {
 	return &basicAuthRoundTripper{username, password, rt}
 }
