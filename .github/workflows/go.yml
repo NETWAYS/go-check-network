@@ -9,6 +9,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        module: [http]
 
     steps:
       - name: Set up Go
@@ -20,7 +23,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Vet
-        run: find . -name go.mod -execdir go vet ./... \;
+        run: go vet ./...
+        working-directory: ${{ matrix.module }}
 
       - name: Test
-        run: find . -name go.mod -execdir go test -f ./... \;
+        run: go test -v ./...
+        working-directory: ${{ matrix.module }}
