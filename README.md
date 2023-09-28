@@ -6,7 +6,7 @@ See also:
 
 * https://github.com/NETWAYS/go-check
 
-We decided to create a dedicated collection for this code to keep the `go-check` module small and focused.
+We decided to create a dedicated collection for this code to keep the `go-check` module small and focused. Multiple modules within this repository help to reduce dependencies for downstream projects.
 
 ## http
 
@@ -19,6 +19,8 @@ The go-check-network/http/config package provides helpers to configure HTTP conn
 Examples:
 
 ```
+import "github.com/NETWAYS/go-check-network/http/config"
+
 // Example for TLSConfig from files
 tlsConfig, err := checkhttp.NewTLSConfig(&checkhttpconfig.TLSConfig{
     InsecureSkipVerify: false,
@@ -51,7 +53,7 @@ The go-check-network/http/config package provides additions to the jarcoal/httpm
 
 # License
 
-Copyright (c) 2023 [NETWAYS GmbH](mailto:info@netways.de)
+Copyright (c) 2023 [NETWAYS GmbH](https://www.netways.de/)
 
 This library is distributed under the GPL-2.0 or newer license found in the [COPYING](./COPYING)
 file.
