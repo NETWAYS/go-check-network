@@ -1,6 +1,7 @@
 package checkhttpmock
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"log/slog"
@@ -8,6 +9,20 @@ import (
 
 	"gopkg.in/yaml.v3"
 )
+
+// Read all data from a io.ReadCloser, return the data as string and return a new io.ReadCloser to pass on
+//
+// This can be quite tricky and is only used for mocking and testing here.
+func dumpAndBuffer(r io.ReadCloser) (string, io.ReadCloser) {
+	data, err := io.ReadAll(r)
+	if err != nil {
+		panic(err)
+	}
+
+	_ = r.Close()
+
+	return string(data), io.NopCloser(bytes.NewReader(data))
+}
 
 // Data structure to store information about a http.Request and http.Response in a simplified way
 type Record struct {

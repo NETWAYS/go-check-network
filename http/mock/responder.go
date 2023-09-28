@@ -12,6 +12,20 @@ import (
 
 // Where response data is stored, relative to the package being tested
 const TestData = "./testdata"
+const contentTypeHeader = "Content-Type"
+const contentTypeUrlencoded = "application/x-www-form-urlencoded"
+
+// Extract a URL query from the request body, when the Content-Type is set to be urlencoded
+func extractFormQuery(request *http.Request) string {
+	if strings.Contains(request.Header.Get(contentTypeHeader), contentTypeUrlencoded) {
+		query, newReader := dumpAndBuffer(request.Body)
+		request.Body = newReader
+
+		return query
+	}
+
+	return ""
+}
 
 // Mapping a partial form request to a response
 //
