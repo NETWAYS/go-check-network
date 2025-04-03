@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"path/filepath"
 	"strings"
 
 	"github.com/jarcoal/httpmock"
@@ -52,7 +53,7 @@ func NewQueryMapResponder(queryMap QueryMap) func(request *http.Request) (*http.
 
 		for part, file := range queryMap {
 			if strings.Contains(query, part) {
-				body, err := os.ReadFile(path.Join(TestData, file))
+				body, err := os.ReadFile(filepath.Clean(path.Join(TestData, file)))
 				return httpmock.NewStringResponse(200, string(body)), err
 			}
 		}

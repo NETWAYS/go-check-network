@@ -44,11 +44,11 @@ func (rec *Recorder) writer() io.Writer {
 	} else if rec.RecordFile != "-" && rec.RecordFile != "" {
 		// Ensure directory is writable
 		dir := path.Dir(rec.RecordFile)
-		_ = os.MkdirAll(dir, 0755)
+		_ = os.MkdirAll(dir, 0750)
 
 		// Open file in append mode
 		// nolint: nosnakecase
-		f, err := os.OpenFile(RecordFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+		f, err := os.OpenFile(RecordFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
 		if err == nil {
 			rec.Writer = f
 		}
