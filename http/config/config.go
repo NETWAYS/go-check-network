@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -29,7 +30,7 @@ func cloneRequest(r *http.Request) *http.Request {
 
 // readCAFile reads the CA cert file from disk.
 func readCAFile(f string) ([]byte, error) {
-	d, err := os.ReadFile(f)
+	d, err := os.ReadFile(filepath.Clean(f))
 
 	if err != nil {
 		return nil, fmt.Errorf("unable to load CA cert %s: %w", f, err)
@@ -57,12 +58,13 @@ func (c *TLSConfig) getClientCertificate(_ *tls.CertificateRequestInfo) (*tls.Ce
 
 // readCertAndKey reads the cert and key files from the disk.
 func readCertAndKey(certFile, keyFile string) ([]byte, []byte, error) {
-	certData, err := os.ReadFile(certFile)
+	certData, err := os.ReadFile(filepath.Clean(certFile))
+
 	if err != nil {
 		return nil, nil, err
 	}
 
-	keyData, err := os.ReadFile(keyFile)
+	keyData, err := os.ReadFile(filepath.Clean(keyFile))
 	if err != nil {
 		return nil, nil, err
 	}

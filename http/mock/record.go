@@ -60,7 +60,7 @@ func (r *Record) Complete(response *http.Response) {
 }
 
 // Write a YAML representation of the Record to an io.Writer
-func (r Record) EmitYAML(w io.Writer) (err error) {
+func (r *Record) EmitYAML(w io.Writer) (err error) {
 	out := yaml.NewEncoder(w)
 	out.SetIndent(2)
 
