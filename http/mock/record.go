@@ -7,7 +7,7 @@ import (
 	"log/slog"
 	"net/http"
 
-	"gopkg.in/yaml.v3"
+	"github.com/goccy/go-yaml"
 )
 
 // Read all data from a io.ReadCloser, return the data as string and return a new io.ReadCloser to pass on
@@ -62,7 +62,6 @@ func (r *Record) Complete(response *http.Response) {
 // Write a YAML representation of the Record to an io.Writer
 func (r *Record) EmitYAML(w io.Writer) (err error) {
 	out := yaml.NewEncoder(w)
-	out.SetIndent(2)
 
 	_, _ = fmt.Fprintln(w, "---")
 
