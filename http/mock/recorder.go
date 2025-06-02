@@ -37,6 +37,26 @@ func ActivateRecorder() (rec *Recorder) {
 	return
 }
 
+// Handle http.request for httpmock, and execute a real HTTP connection using httpmock.InitialTransport
+//
+// Recording and returning the real http.Response
+func (rec *Recorder) Respond(request *http.Request) (response *http.Response, err error) {
+	r := NewRecord(request)
+
+	// Do a real request bypassing mock
+	response, err = httpmock.InitialTransport.RoundTrip(request)
+	if err != nil {
+		err = fmt.Errorf("could not execute HTTP request: %w", err)
+		return
+	}
+
+	r.Complete(response)
+
+	err = r.EmitYAML(rec.writer())
+
+	return
+}
+
 // Open the Writer when needed
 func (rec *Recorder) writer() io.Writer {
 	if rec.Writer != nil {
@@ -58,24 +78,4 @@ func (rec *Recorder) writer() io.Writer {
 	}
 
 	return rec.Writer
-}
-
-// Handle http.request for httpmock, and execute a real HTTP connection using httpmock.InitialTransport
-//
-// Recording and returning the real http.Response
-func (rec *Recorder) Respond(request *http.Request) (response *http.Response, err error) {
-	r := NewRecord(request)
-
-	// Do a real request bypassing mock
-	response, err = httpmock.InitialTransport.RoundTrip(request)
-	if err != nil {
-		err = fmt.Errorf("could not execute HTTP request: %w", err)
-		return
-	}
-
-	r.Complete(response)
-
-	err = r.EmitYAML(rec.writer())
-
-	return
 }
