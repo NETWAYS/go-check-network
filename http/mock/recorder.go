@@ -47,7 +47,6 @@ func (rec *Recorder) writer() io.Writer {
 		_ = os.MkdirAll(dir, 0750)
 
 		// Open file in append mode
-		// nolint: nosnakecase
 		f, err := os.OpenFile(RecordFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
 		if err == nil {
 			rec.Writer = f
