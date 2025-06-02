@@ -37,30 +37,6 @@ func ActivateRecorder() (rec *Recorder) {
 	return
 }
 
-// Open the Writer when needed
-func (rec *Recorder) writer() io.Writer {
-	if rec.Writer != nil {
-		return rec.Writer
-	} else if rec.RecordFile != "-" && rec.RecordFile != "" {
-		// Ensure directory is writable
-		dir := path.Dir(rec.RecordFile)
-		_ = os.MkdirAll(dir, 0750)
-
-		// Open file in append mode
-		// nolint: nosnakecase
-		f, err := os.OpenFile(RecordFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
-		if err == nil {
-			rec.Writer = f
-		}
-	}
-
-	if rec.Writer == nil {
-		rec.Writer = os.Stdout
-	}
-
-	return rec.Writer
-}
-
 // Handle http.request for httpmock, and execute a real HTTP connection using httpmock.InitialTransport
 //
 // Recording and returning the real http.Response
@@ -79,4 +55,27 @@ func (rec *Recorder) Respond(request *http.Request) (response *http.Response, er
 	err = r.EmitYAML(rec.writer())
 
 	return
+}
+
+// Open the Writer when needed
+func (rec *Recorder) writer() io.Writer {
+	if rec.Writer != nil {
+		return rec.Writer
+	} else if rec.RecordFile != "-" && rec.RecordFile != "" {
+		// Ensure directory is writable
+		dir := path.Dir(rec.RecordFile)
+		_ = os.MkdirAll(dir, 0750)
+
+		// Open file in append mode
+		f, err := os.OpenFile(RecordFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
+		if err == nil {
+			rec.Writer = f
+		}
+	}
+
+	if rec.Writer == nil {
+		rec.Writer = os.Stdout
+	}
+
+	return rec.Writer
 }
